@@ -21,7 +21,12 @@ export default async function handler(
     const randomIndex = Math.floor(Math.random() * movieCount);
     const randomMovie = await prismadb.movie.findMany({
       take: 1,
-      skip: randomIndex
+      skip: randomIndex,
+      select: {
+        title: true,
+        description: true,
+        thumbnailUrl: true
+      }
     });
 
     return res.status(200).json(randomMovie[0] ?? null);
