@@ -1,9 +1,24 @@
 import Image from "next/image";
 import { useState } from "react";
-import Link from "next/link";
 import NavbarItem from "./navbaritem";
 import { BsBell, BsChevronDown, BsSearch } from "react-icons/bs";
 import AccountMenu from "./accountmenu";
+
+const unavailablePages = [
+  "TV Shows",
+  "Movies",
+  "Browse by Language",
+  "New & Popular"
+];
+
+const navigationItems = [
+  { label: "Home", href: "/" },
+  { label: "TV Shows" },
+  { label: "Movies" },
+  { label: "Browse by Language" },
+  { label: "New & Popular" },
+  { label: "My List", href: "/my-list" }
+];
 
 const MobileMenu = ({ visible }: { visible: boolean }) => {
   if (!visible) return null;
@@ -14,10 +29,9 @@ const MobileMenu = ({ visible }: { visible: boolean }) => {
       className="absolute left-0 top-8 flex w-56 flex-col border-2 border-gray-800 bg-black py-5"
     >
       <div className="flex flex-col gap-4">
-        <Link href="/" className="text-white transition hover:text-gray-300">
-          Home
-        </Link>
-        {["TV Shows", "Movies", "Browse by Language", "New & Popular", "My List"].map((item) => (
+        <NavbarItem label="Home" href="/" />
+        <NavbarItem label="My List" href="/my-list" />
+        {unavailablePages.map((item) => (
           <button
             key={item}
             type="button"
@@ -71,7 +85,7 @@ const Navbar = ({
             type="button"
             aria-expanded={mobileMenuVisible}
             aria-controls="mobile-navigation-menu"
-            onClick={() => setMobileMenuVisible(true)}
+            onClick={() => setMobileMenuVisible((visible) => !visible)}
             className="flex items-center gap-2 text-white"
           >
             Browse
@@ -81,12 +95,9 @@ const Navbar = ({
 
         </div>
         <div className="relative ml-8 hidden flex-row space-x-4 lg:flex">
-          <NavbarItem label="Home" />
-          <NavbarItem label="TV Shows" />
-          <NavbarItem label="Movies" />
-          <NavbarItem label="Browse by Language" />
-          <NavbarItem label="New & Popular" />
-          <NavbarItem label="My List" />
+          {navigationItems.map((item) => (
+            <NavbarItem key={item.label} {...item} />
+          ))}
         </div>
         <div className="ml-auto flex items-center gap-5">
           <div className="relative">

@@ -26,7 +26,10 @@ const providers: AuthOptions["providers"] = [
         where: { email: credentials.email.trim().toLowerCase() }
       });
 
-      if (!user || !(await compare(credentials.password, user.hashedPassword))) {
+      if (
+        !user?.hashedPassword ||
+        !(await compare(credentials.password, user.hashedPassword))
+      ) {
         return null;
       }
 

@@ -5,17 +5,28 @@ import prisma from "./prismadb";
 
 const serverAuth = async (req: NextApiRequest, res: NextApiResponse) => {
   const session = await getServerSession(req, res, authOptions);
-  if (!session?.user?.email) {
+  const email = session?.user?.email?.trim().toLowerCase();
+  if (!email) {
     throw new Error("Unauthorized");
   }
 
-  const user = await prisma.user.findUnique({
-    where: { email: session.user.email }
+  const user = await prisma.user.upsert({
+    where: { email },
+    create: {
+      email,
+      name: session?.user?.name?.trim() || email,
+      image: session?.user?.image ?? null,
+      hashedPassword: null
+    },
+    update: {},
+    select: {
+      id: true,
+      email: true,
+      name: true,
+      image: true,
+      favoriteIds: true
+    }
   });
-
-  if (!user) {
-    throw new Error("Unauthorized");
-  }
 
   return { user };
 };

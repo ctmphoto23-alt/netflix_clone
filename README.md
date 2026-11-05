@@ -20,6 +20,21 @@ You can start editing the page by modifying `app/page.tsx`. The page auto-update
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
+## Social sign-in
+
+The sign-in page supports GitHub, Facebook, and Google OAuth. Configure the client ID and secret for each provider in `.env` to enable its button:
+
+```env
+GITHUB_ID=
+GITHUB_SECRET=
+FACEBOOK_CLIENT_ID=
+FACEBOOK_CLIENT_SECRET=
+GOOGLE_CLIENT_ID=
+GOOGLE_CLIENT_SECRET=
+```
+
+Register each provider's callback URL as `http://localhost:3000/api/auth/callback/github`, `http://localhost:3000/api/auth/callback/facebook`, or `http://localhost:3000/api/auth/callback/google`, as appropriate. For production, use the same path on your deployed site's URL. Restart the development server after changing `.env`.
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:

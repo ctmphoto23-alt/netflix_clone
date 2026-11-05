@@ -1,61 +1,30 @@
-import React from "react"; 
+import type { ChangeEventHandler, HTMLInputTypeAttribute } from "react";
 
-interface InputProps {
+type InputProps = {
   id: string;
-  onChange: any
+  onChange: ChangeEventHandler<HTMLInputElement>;
   value: string;
   label: string;
-  type: string;
-}
-const Input: React.FC<InputProps> = ({ id, onChange, value, label, type }) => {
-  return (
-    <div className="relative">
-      <input 
-      value={value}
+  type: HTMLInputTypeAttribute;
+};
+
+const Input = ({ id, onChange, value, label, type }: InputProps) => (
+  <div className="relative">
+    <input
+      id={id}
       type={type}
+      value={value}
       onChange={onChange}
-        id={id}
-        className="
-          block
-          rounded-md
-          px-6
-          pt-6
-          pb-1
-          w-full
-          text-md
-          text-white
-          bg-neutral-700
-          appearance-none
-          focus:outline-none
-          focus:ring-0
-          peer
-        "
-        placeholder=" "
-      />
-      <label
-        className="
-          absolute
-          text-md
-          text-zinc-400
-          duration-150
-          transform
-          -translate-y-3
-          scale-75
-          top-3
-          z-10
-          origin-[0]
-          left-6
-          peer-placeholder-shown:scale-100
-          peer-placeholder-shown:translate-y-0
-          peer-focus:scale-75
-          peer-focus:-translate-y-3
-        "
-        htmlFor={id}
-      >
-        {label}
-      </label>
-    </div> 
-  );
-}
+      placeholder=" "
+      className="peer block w-full appearance-none rounded-md bg-neutral-700 px-6 pb-1 pt-6 text-md text-white focus:outline-none focus:ring-0"
+    />
+    <label
+      htmlFor={id}
+      className="absolute left-6 top-3 z-10 origin-[0] -translate-y-3 transform text-md text-zinc-400 duration-150 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-3 peer-focus:scale-75"
+    >
+      {label}
+    </label>
+  </div>
+);
 
 export default Input;

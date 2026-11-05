@@ -1,17 +1,24 @@
 import type { NextApiRequest, NextApiResponse } from "next";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "./auth/[...nextauth]";
 import prismadb from "@/lib/prismadb";
-import serverAuth from "@/lib/serverauth";
+import { getSafariCompatibleVideoUrl } from "@/lib/movies";
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
   if (req.method !== "GET") {
+    res.setHeader("Allow", "GET");
     return res.status(405).json({ error: "Method not allowed" });
   }
 
   try {
-    await serverAuth(req, res);
+    const session = await getServerSession(req, res, authOptions);
+    if (!session?.user) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+
     const movieCount = await prismadb.movie.count();
 
     if (movieCount === 0) {
@@ -23,18 +30,24 @@ export default async function handler(
       take: 1,
       skip: randomIndex,
       select: {
+        id: true,
         title: true,
         description: true,
-        thumbnailUrl: true
+        thumbnailUrl: true,
+        videoUrl: true,
+        releaseYear: true,
+        director: true,
+        duration: true
       }
     });
 
-    return res.status(200).json(randomMovie[0] ?? null);
+    const movie = randomMovie[0];
+    return res.status(200).json(
+      movie
+        ? { ...movie, videoUrl: getSafariCompatibleVideoUrl(movie.videoUrl) }
+        : null
+    );
   } catch (error) {
-    if (error instanceof Error && error.message === "Unauthorized") {
-      return res.status(401).json({ error: "Unauthorized" });
-    }
-
     console.error("Failed to load a random movie:", error);
     return res.status(500).json({ error: "Could not load the featured title." });
   }
